@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using DITestBotApp.Services;
+using Autofac;
+using DITestBotApp.Factories;
 
 namespace DITestBotApp.Dialogs
 {
@@ -10,10 +12,12 @@ namespace DITestBotApp.Dialogs
     public class RootDialog : IDialog<object>
     {
         private IGreetService GreetService { get; }
+        private IDialogFactory Factory { get; }
 
         // DIする
-        public RootDialog(IGreetService greetService)
+        public RootDialog(IDialogFactory factory, IGreetService greetService)
         {
+            this.Factory = factory;
             this.GreetService = greetService;
         }
 
@@ -35,13 +39,26 @@ namespace DITestBotApp.Dialogs
         {
             var activity = await result as Activity;
 
-            // calculate something for us to return
-            int length = (activity.Text ?? string.Empty).Length;
+            if (activity.Text == "change")
+            {
+                context.Call(this.Factory.Create<SimpleDialog>(), this.ResumeSimpleDialogAsync);
+            }
+            else
+            {
+                // calculate something for us to return
+                int length = (activity.Text ?? string.Empty).Length;
 
-            // return our reply to the user
-            await context.PostAsync($"You sent {activity.Text} which was {length} characters");
+                // return our reply to the user
+                await context.PostAsync($"You sent {activity.Text} which was {length} characters");
 
-            context.Wait(MessageReceivedAsync);
+                context.Wait(MessageReceivedAsync);
+            }
+        }
+
+        private async Task ResumeSimpleDialogAsync(IDialogContext context, IAwaitable<object> result)
+        {
+            await context.PostAsync("returned");
+            context.Wait(this.MessageReceivedAsync);
         }
     }
 }
