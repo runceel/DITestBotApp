@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using DITestBotApp.Factories;
+using DITestBotApp.Services;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
-using DITestBotApp.Services;
-using Autofac;
-using DITestBotApp.Factories;
+using System;
+using System.Threading.Tasks;
 
 namespace DITestBotApp.Dialogs
 {
@@ -12,53 +11,45 @@ namespace DITestBotApp.Dialogs
     public class RootDialog : IDialog<object>
     {
         private IGreetService GreetService { get; }
-        private IDialogFactory Factory { get; }
+        private IDialogFactory DialogFactory { get; }
 
-        // DIする
-        public RootDialog(IDialogFactory factory, IGreetService greetService)
+        public RootDialog(IDialogFactory dialogFactory, IGreetService greetService)
         {
-            this.Factory = factory;
+            this.DialogFactory = dialogFactory;
             this.GreetService = greetService;
         }
 
         public Task StartAsync(IDialogContext context)
         {
-            context.Wait(this.GreetAsync);
-
+            context.Wait(this.GreetInteractionAsync);
             return Task.CompletedTask;
         }
 
-        private async Task GreetAsync(IDialogContext context, IAwaitable<object> result)
+        public async Task GreetInteractionAsync(IDialogContext context, IAwaitable<object> result)
         {
-            // DIしたやつを使う
             await context.PostAsync(this.GreetService.GetMessage());
-            await this.MessageReceivedAsync(context, result);
+            await this.MainInteractionAsync(context, result);
         }
 
-        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
+        public async Task MainInteractionAsync(IDialogContext context, IAwaitable<object> result)
         {
             var activity = await result as Activity;
-
             if (activity.Text == "change")
             {
-                context.Call(this.Factory.Create<SimpleDialog>(), this.ResumeSimpleDialogAsync);
+                context.Call(this.DialogFactory.Create<SimpleDialog>(), this.ReturnFromSimpleDialogInteractionAsync);
             }
             else
             {
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
-
-                // return our reply to the user
+                var length = (activity.Text ?? string.Empty).Length;
                 await context.PostAsync($"You sent {activity.Text} which was {length} characters");
-
-                context.Wait(MessageReceivedAsync);
+                context.Wait(this.ReturnFromSimpleDialogInteractionAsync);
             }
         }
 
-        private async Task ResumeSimpleDialogAsync(IDialogContext context, IAwaitable<object> result)
+        public async Task ReturnFromSimpleDialogInteractionAsync(IDialogContext context, IAwaitable<object> result)
         {
             await context.PostAsync("returned");
-            context.Wait(this.MessageReceivedAsync);
+            context.Wait(this.MainInteractionAsync);
         }
     }
 }
