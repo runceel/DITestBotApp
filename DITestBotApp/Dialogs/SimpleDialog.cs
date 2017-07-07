@@ -1,4 +1,5 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
 using System;
 using System.Threading.Tasks;
@@ -16,13 +17,20 @@ namespace DITestBotApp.Dialogs
         public async Task StartAsync(IDialogContext context)
         {
             await context.PostAsync("SimpleDialog started");
-            context.Wait(this.HelloWorldAsync);
+            PromptDialog.Choice(
+                context,
+                this.HelloWorldAsync,
+                new[]
+                {
+                    "A", "B", "C",
+                },
+                "あなたの好きなのは？？");
         }
 
-        private async Task HelloWorldAsync(IDialogContext context, IAwaitable<object> result)
+        private async Task HelloWorldAsync(IDialogContext context, IAwaitable<string> result)
         {
-            var input = await result as Activity;
-            await context.PostAsync($"Hello world!! {input.Text}");
+            var input = await result;
+            await context.PostAsync($"Hello world!! {input}");
             context.Done<object>(null);
         }
     }

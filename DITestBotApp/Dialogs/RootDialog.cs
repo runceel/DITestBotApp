@@ -42,7 +42,7 @@ namespace DITestBotApp.Dialogs
             {
                 var length = (activity.Text ?? string.Empty).Length;
                 await context.PostAsync($"You sent {activity.Text} which was {length} characters");
-                context.Wait(this.ReturnFromSimpleDialogInteractionAsync);
+                context.Wait(this.MainInteractionAsync);
             }
         }
 

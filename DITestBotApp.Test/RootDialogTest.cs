@@ -45,6 +45,8 @@ namespace DITestBotApp.Test
             dialogContextMock.Setup(x => x.PostAsync(It.Is<IMessageActivity>(y => y.Text == "You sent okazuki which was 7 characters"), default(CancellationToken)))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
+            dialogContextMock.Setup(x => x.Wait(It.Is<ResumeAfter<IMessageActivity>>(y => y.Method.Name == nameof(RootDialog.MainInteractionAsync))))
+                .Verifiable();
             var resultMock = Awaitable.FromItem<object>(new Activity { Text = "okazuki" });
 
             var target = new RootDialog(dialogFactoryMock.Object, greetServiceMock.Object);
