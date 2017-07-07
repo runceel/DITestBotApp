@@ -5,8 +5,13 @@ using System.Threading.Tasks;
 
 namespace DITestBotApp.Dialogs
 {
+    public interface ISimpleDialog : IDialog<object>
+    {
+        // こいつもテストするならHelloWorldAsyncとか定義することになるかな
+    }
+
     [Serializable]
-    public class SimpleDialog : IDialog<object>
+    public class SimpleDialog : ISimpleDialog
     {
         public async Task StartAsync(IDialogContext context)
         {

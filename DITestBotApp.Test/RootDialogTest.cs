@@ -58,13 +58,13 @@ namespace DITestBotApp.Test
         public async Task MainInteractionAsyncChangeCase()
         {
             var dialogFactoryMock = new Mock<IDialogFactory>();
-            var simpleDialog = new SimpleDialog();
-            dialogFactoryMock.Setup(x => x.Create<SimpleDialog>())
-                .Returns(simpleDialog)
+            var simpleDialogMock = new Mock<ISimpleDialog>();
+            dialogFactoryMock.Setup(x => x.Create<ISimpleDialog>())
+                .Returns(simpleDialogMock.Object)
                 .Verifiable();
 
             var dialogContextMock = new Mock<IDialogContext>();
-            dialogContextMock.Setup(x => x.Call(It.Is<SimpleDialog>(y => y == simpleDialog),
+            dialogContextMock.Setup(x => x.Call(It.Is<ISimpleDialog>(y => y == simpleDialogMock.Object),
                 It.Is<ResumeAfter<object>>(y => y.Method.Name == nameof(RootDialog.ReturnFromSimpleDialogInteractionAsync))))
                 .Verifiable();
 

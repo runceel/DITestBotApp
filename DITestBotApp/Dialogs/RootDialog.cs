@@ -36,7 +36,7 @@ namespace DITestBotApp.Dialogs
             var activity = await result as Activity;
             if (activity.Text == "change")
             {
-                context.Call(this.DialogFactory.Create<SimpleDialog>(), this.ReturnFromSimpleDialogInteractionAsync);
+                context.Call(this.DialogFactory.Create<ISimpleDialog>(), this.ReturnFromSimpleDialogInteractionAsync);
             }
             else
             {

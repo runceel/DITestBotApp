@@ -26,6 +26,7 @@ namespace DITestBotApp
                     .InstancePerLifetimeScope();
 
                 builder.RegisterType<SimpleDialog>()
+                    .AsImplementedInterfaces()
                     .InstancePerDependency();
 
                 builder.RegisterType<GreetService>()
