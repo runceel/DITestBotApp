@@ -27,7 +27,7 @@ namespace DITestBotApp.Dialogs
                 "あなたの好きなのは？？");
         }
 
-        private async Task HelloWorldAsync(IDialogContext context, IAwaitable<string> result)
+        public async Task HelloWorldAsync(IDialogContext context, IAwaitable<string> result)
         {
             var input = await result;
             await context.PostAsync($"Hello world!! {input}");
