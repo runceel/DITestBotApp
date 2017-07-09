@@ -15,7 +15,7 @@ namespace DITestBotApp.Test
     public class SimpleDialogTest
     {
         [TestMethod]
-        public async Task StartAsyncTest()
+        public async Task StartAsyncTest_Fakes()
         {
             using (ShimsContext.Create())
             {
@@ -27,16 +27,17 @@ namespace DITestBotApp.Test
                         Assert.AreEqual("B", chioce.ElementAtOrDefault(1));
                         Assert.AreEqual("C", chioce.ElementAtOrDefault(2));
                         Assert.AreEqual("あなたの好きなのは？？", primpt);
+                        Assert.AreEqual(nameof(SimpleDialog.HelloWorldAsync), resumeAfter.Method.Name);
                         choiceCalled = true;
                     });
 
-                var dialogContext = new Mock<IDialogContext>();
-                dialogContext.Setup(x => x.PostAsync(It.Is<IMessageActivity>(y => y.Text == "SimpleDialog started"), default(CancellationToken)))
+                var dialogContextMock = new Mock<IDialogContext>();
+                dialogContextMock.Setup(x => x.PostAsync(It.Is<IMessageActivity>(y => y.Text == "SimpleDialog started"), default(CancellationToken)))
                     .Returns(Task.CompletedTask)
                     .Verifiable();
-                dialogContext.Setup(x => x.MakeMessage()).Returns(Activity.CreateMessageActivity());
+                dialogContextMock.Setup(x => x.MakeMessage()).Returns(Activity.CreateMessageActivity());
                 var target = new SimpleDialog();
-                await target.StartAsync(dialogContext.Object);
+                await target.StartAsync(dialogContextMock.Object);
 
                 Assert.IsTrue(choiceCalled);
             }
