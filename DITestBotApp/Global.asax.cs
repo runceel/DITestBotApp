@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using DITestBotApp.Dialogs;
 using DITestBotApp.Factories;
+using DITestBotApp.Prompts;
 using DITestBotApp.Services;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Internals.Fibers;
@@ -31,6 +32,11 @@ namespace DITestBotApp
 
                 builder.RegisterType<GreetService>()
                     .Keyed<IGreetService>(FiberModule.Key_DoNotSerialize)
+                    .AsImplementedInterfaces()
+                    .SingleInstance();
+
+                builder.RegisterType<PromptService>()
+                    .Keyed<IPromptService>(FiberModule.Key_DoNotSerialize)
                     .AsImplementedInterfaces()
                     .SingleInstance();
             });
