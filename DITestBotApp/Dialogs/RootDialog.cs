@@ -42,7 +42,7 @@ namespace DITestBotApp.Dialogs
             }
             else if (activity.Text == "form")
             {
-                await context.Forward(FormDialog.FromForm(Customer.BuildForm), this.ReturnFromCustomerForm, activity);
+                context.Call(FormDialog.FromForm(Customer.BuildForm, FormOptions.PromptInStart), this.ReturnFromCustomerForm);
             }
             else
             {

@@ -24,6 +24,10 @@ namespace DITestBotApp.Forms
         {
             return new FormBuilder<Customer>()
                 .Message("カスタマーの情報を入れてね")
+                .Field(nameof(Name), "名前を入力してください")
+                .Field(nameof(Age), "年齢を入力してください")
+                .Field(nameof(Type), "タイプを選択してください")
+                .Confirm("上記内容でよろしいですか")
                 .Build();
         }
     }

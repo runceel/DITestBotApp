@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DITestBotApp.Test
+namespace DITestBotApp.Test.Dialogs
 {
     [TestClass]
     public class SimpleDialogTest

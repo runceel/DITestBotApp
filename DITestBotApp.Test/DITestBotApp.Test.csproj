@@ -93,9 +93,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\CustomerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RootDialogTest.cs" />
-    <Compile Include="SimpleDialogTest.cs" />
+    <Compile Include="Dialogs\RootDialogTest.cs" />
+    <Compile Include="Dialogs\SimpleDialogTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

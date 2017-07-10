@@ -11,7 +11,7 @@ using System.Threading;
 using Microsoft.Bot.Builder.FormFlow;
 using DITestBotApp.Forms;
 
-namespace DITestBotApp.Test
+namespace DITestBotApp.Test.Dialogs
 {
     [TestClass]
     public class RootDialogTest
@@ -85,11 +85,8 @@ namespace DITestBotApp.Test
         public async Task MainInteractionAsyncFormCase()
         {
             var dialogContextMock = new Mock<IDialogContext>();
-            dialogContextMock.Setup(x => x.Forward(It.IsAny<IFormDialog<Customer>>(),
-                It.Is<ResumeAfter<Customer>>(y => y.Method.Name == nameof(RootDialog.ReturnFromCustomerForm)),
-                It.Is<IMessageActivity>(y => y.Text == "form"),
-                default(CancellationToken)))
-                .Returns(Task.CompletedTask)
+            dialogContextMock.Setup(x => x.Call(It.IsAny<IFormDialog<Customer>>(),
+                It.Is<ResumeAfter<Customer>>(y => y.Method.Name == nameof(RootDialog.ReturnFromCustomerForm))))
                 .Verifiable();
 
             var resultMock = Awaitable.FromItem<object>(new Activity { Text = "form" });
