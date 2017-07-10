@@ -28,11 +28,9 @@ namespace DITestBotApp.Test.Forms
             // 初回メッセージを投げたときの応答
             dialogContextMock.Setup(x => x.PostAsync(It.Is<IMessageActivity>(y => y.Text == "カスタマーの情報を入れてね"), default(CancellationToken)))
                 .Returns(Task.CompletedTask)
-                .Callback<IMessageActivity, CancellationToken>((x, y) => Debug.WriteLine(x.Text))
                 .Verifiable();
             dialogContextMock.Setup(x => x.PostAsync(It.Is<IMessageActivity>(y => y.Text == "名前を入力してください"), default(CancellationToken)))
                 .Returns(Task.CompletedTask)
-                .Callback<IMessageActivity, CancellationToken>((x, y) => Debug.WriteLine(x.Text))
                 .Verifiable();
 
             // 初回メッセージを投げ込んで意図した内容が渡ってきたか確認
