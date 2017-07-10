@@ -8,6 +8,8 @@ using Microsoft.Bot.Connector;
 using DITestBotApp.Services;
 using DITestBotApp.Factories;
 using System.Threading;
+using Microsoft.Bot.Builder.FormFlow;
+using DITestBotApp.Forms;
 
 namespace DITestBotApp.Test
 {
@@ -76,6 +78,25 @@ namespace DITestBotApp.Test
             await target.MainInteractionAsync(dialogContextMock.Object, resultMock);
 
             dialogFactoryMock.Verify();
+            dialogContextMock.Verify();
+        }
+
+        [TestMethod]
+        public async Task MainInteractionAsyncFormCase()
+        {
+            var dialogContextMock = new Mock<IDialogContext>();
+            dialogContextMock.Setup(x => x.Forward(It.IsAny<IFormDialog<Customer>>(),
+                It.Is<ResumeAfter<Customer>>(y => y.Method.Name == nameof(RootDialog.ReturnFromCustomerForm)),
+                It.Is<IMessageActivity>(y => y.Text == "form"),
+                default(CancellationToken)))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+            var resultMock = Awaitable.FromItem<object>(new Activity { Text = "form" });
+
+            var target = new RootDialog(null, null);
+            await target.MainInteractionAsync(dialogContextMock.Object, resultMock);
+
             dialogContextMock.Verify();
         }
 
